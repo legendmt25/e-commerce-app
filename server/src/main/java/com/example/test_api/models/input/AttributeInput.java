@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class AttributeInput {
+    private Long id;
     private String title;
     private List<AttributeValueInput> values;
 }

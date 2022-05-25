@@ -15,10 +15,9 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
 
-    @OneToMany
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private List<Attribute> attributes;
 

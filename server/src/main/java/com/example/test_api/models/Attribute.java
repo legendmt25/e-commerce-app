@@ -1,9 +1,14 @@
 package com.example.test_api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "attribute")
@@ -15,12 +20,16 @@ public class Attribute {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-
-    @OneToMany
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL)
     private List<AttributeValue> values;
 
-    public Attribute(String title, List<AttributeValue> values) {
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "product_id")
+    @JsonIgnore
+    private Product product;
+
+    public Attribute(String title) {
         this.title = title;
-        this.values = values;
+        this.values = new ArrayList<>();
     }
 }

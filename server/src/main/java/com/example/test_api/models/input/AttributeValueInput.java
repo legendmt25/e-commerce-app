@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class AttributeValueInput {
+    private Long id;
     private String value;
 }
