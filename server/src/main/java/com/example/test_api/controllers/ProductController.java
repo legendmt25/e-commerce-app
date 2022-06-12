@@ -9,8 +9,10 @@ import com.example.test_api.models.input.ProductInput;
 import com.example.test_api.models.projections.ProductWithPriceProjection;
 import com.example.test_api.models.requests.AddAttributesRequest;
 import com.example.test_api.models.requests.FilterRequest;
+import com.example.test_api.models.requests.ManageAttributesRequest;
 import com.example.test_api.services.AttributeService;
 import com.example.test_api.services.ProductService;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -20,14 +22,10 @@ import java.util.List;
 @RequestMapping("api/v1/products")
 @RestController
 @CrossOrigin("*")
+@AllArgsConstructor
 public class ProductController {
     private final ProductService productService;
     private final AttributeService attributeService;
-
-    public ProductController(ProductService productService, AttributeService attributeService) {
-        this.productService = productService;
-        this.attributeService = attributeService;
-    }
 
     @GetMapping("/{id}")
     ProductWithAttributesDto getProduct(@PathVariable Long id) {
@@ -52,9 +50,15 @@ public class ProductController {
 
     @PostMapping("/{id}/add-attributes")
     public Boolean addProductAttributes(@PathVariable Long id,
-                                          @RequestBody AddAttributesRequest body) {
-        return this.attributeService.updateAttributes(id, body.getAttributes());
+                                        @RequestBody AddAttributesRequest body) {
+        return this.attributeService.addAttributes(id, body.getAttributes());
     }
+
+    @PostMapping("/{id}/manage-attributes")
+    public Boolean manageAttributes(@PathVariable Long id, @RequestBody ManageAttributesRequest body) {
+        return this.attributeService.manageAttributes(id, body.getDeleted(), body.getUpdated(), body.getCreated());
+    }
+
 
     @GetMapping("/{id}/attributes")
     public List<Attribute> productAttributes(@PathVariable Long id) {

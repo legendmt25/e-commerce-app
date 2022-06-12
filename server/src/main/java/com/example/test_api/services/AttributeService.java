@@ -8,19 +8,19 @@ import com.example.test_api.models.input.AttributeValueInput;
 import java.util.List;
 
 public interface AttributeService {
+    Attribute findById(Long id);
+
     Attribute create(Long productId, AttributeInput input);
 
-    Boolean connectAttributes(Long source, Long target);
-
-    Boolean disconnectAttributes(Long source, Long target);
+    Attribute update(Long id, AttributeInput input);
 
     List<Attribute> findAllByProductId(Long productId);
 
     AttributeValue addValue(Long id, AttributeValueInput input);
 
-    Boolean updateAttributes(Long productId, List<AttributeInput> attributes);
+    Boolean manageAttributes(Long productId, List<AttributeInput> deleted, List<AttributeInput> updated, List<AttributeInput> created);
 
-    Boolean deleteValue(Long valueId);
+    Boolean addAttributes(Long productId, List<AttributeInput> attributes);
 
     Boolean deleteById(Long id);
 

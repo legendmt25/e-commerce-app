@@ -34,7 +34,7 @@ const routes = [
   {
     path: '/products/:id/add-attribute',
     name: 'productAddAttribute',
-    component: () => import('@/views/ProductAddAttributeView.vue'),
+    component: () => import('@/views/ProductManageAttributeView.vue'),
   },
   {
     path: '/products/:id',

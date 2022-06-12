@@ -1,5 +1,12 @@
 <template>
   <template class="flex flex-col gap-1 w-full">
+    <button
+      type="button"
+      class="self-end px-4 pb-2 pt-1 transition-all rounded-full text-white shadow-sm hover:shadow bg-blue-600 hover:bg-blue-500 active:bg-blue-600"
+      @click="$emit('delete')"
+    >
+      x
+    </button>
     <input
       type="text"
       class="outline-none border rounded p-1 transition-all shadow-sm hover:shadow hover:border-gray-400 focus:border-gray-400"
@@ -7,13 +14,15 @@
       name="title"
       placeholder="Title"
       v-model="title"
+      @focusin="titleUpdateFocusIn"
+      @focusout="titleUpdateFocusOut"
     />
     <div class="flex flex-wrap gap-1 items-center">
       <span>Values: </span>
       <button
         class="flex flex-row rounded-full px-5 py-2 shadow-sm text-sm bg-blue-400 text-white hover:bg-blue-500 group transition-all gap-5"
         v-for="(value, index) in values"
-        @click.prevent="values.delete(value)"
+        @click.prevent="deleteValue(value)"
         :key="index"
       >
         <span class="flex-grow break-all">{{ value.value }}</span
@@ -30,7 +39,7 @@
         <button
           type="button"
           @click="handleAddValue"
-          class="rounded-full shadow hover:shadow-xl p-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold whitespace-nowrap"
+          class="rounded-full shadow hover:shadow-xl p-3 transition-all bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold whitespace-nowrap"
         >
           Add value
         </button>
@@ -41,8 +50,8 @@
 
 <script>
 import { computed } from "vue";
-
 export default {
+  emits: ["update", "delete"],
   props: {
     modelValue: {
       type: Object,
@@ -55,12 +64,15 @@ export default {
     return {
       showAddValue: false,
       value: "",
+      oldTitle: "",
     };
   },
   setup(props, { emit }) {
     const title = computed({
       get: () => props.modelValue.title,
-      set: (title) => emit("update:modelValue", { ...props.modelValue, title }),
+      set: (title) => {
+        emit("update:modelValue", { ...props.modelValue, title });
+      },
     });
 
     const values = computed({
@@ -76,6 +88,24 @@ export default {
   },
 
   methods: {
+    titleUpdateFocusIn() {
+      this.oldTitle = this.title;
+    },
+    titleUpdateFocusOut() {
+      this.$emit("update", {
+        ...this.modelValue,
+        title: this.oldTitle,
+        values: new Set(this.modelValue.values),
+      });
+      this.oldTitle = this.title;
+    },
+    deleteValue(value) {
+      this.$emit("update", {
+        ...this.modelValue,
+        values: new Set(this.modelValue.values),
+      });
+      this.values.delete(value);
+    },
     mouseDownButton(event) {
       event.target.classList.add("text-black");
     },
@@ -88,7 +118,12 @@ export default {
         return;
       }
       if (this.value == "") return;
+      this.$emit("update", {
+        ...this.modelValue,
+        values: new Set(this.modelValue.values),
+      });
       this.values.add({ value: this.value });
+      this.values = new Set(this.values);
       this.value = "";
       this.showAddValue = false;
     },

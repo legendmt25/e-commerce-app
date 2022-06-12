@@ -28,8 +28,9 @@ public class Attribute {
     @JsonIgnore
     private Product product;
 
-    public Attribute(String title) {
+    public Attribute(String title, Product product) {
         this.title = title;
         this.values = new ArrayList<>();
+        this.product = product;
     }
 }

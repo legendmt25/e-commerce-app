@@ -1,4 +1,4 @@
-const endpoint = 'http://192.168.100.4:3000/api/v1';
+const endpoint = 'http://localhost:3000/api/v1';
 
 class Repository {
   constructor(endpoint) {
@@ -54,7 +54,7 @@ class Repository {
       })
       .catch((res) => console.log(res));
   }
-  
+
   getProductAttributes(productId) {
     return fetch(`${this.endpoint}/products/${productId}/attributes`, {
       method: 'get',
@@ -70,14 +70,14 @@ class Repository {
       .catch((res) => console.log(res));
   }
 
-  addAttributes(productId, attributes) {
-    return fetch(`${this.endpoint}/products/${productId}/add-attributes`, {
+  manageAttributes(productId, deleted, updated, created) {
+    return fetch(`${this.endpoint}/products/${productId}/manage-attributes`, {
       method: 'post',
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ attributes }),
+      body: JSON.stringify({ created, updated, deleted }),
     })
       .then((res) => {
         if (!res.ok) throw new Error(`Response status: ${res.status}`);
@@ -87,7 +87,7 @@ class Repository {
   }
 
   connectAttributes(connections) {
-    return fetch(`${this.endpoint}/attributes/connect-attributes`, {
+    return fetch(`${this.endpoint}/attribute-values/connect`, {
       method: 'post',
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -103,7 +103,7 @@ class Repository {
   }
 
   disconnectAttributes(connections) {
-    return fetch(`${this.endpoint}/attributes/disconnect-attributes`, {
+    return fetch(`${this.endpoint}/attribute-values/disconnect`, {
       method: 'post',
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -119,7 +119,7 @@ class Repository {
   }
 
   deleteAttributeValue(valueId) {
-    return fetch(`${this.endpoint}/attribute-value/${valueId}/delete`, {
+    return fetch(`${this.endpoint}/attribute-values/${valueId}`, {
       method: 'delete',
       headers: {
         'Access-Control-Allow-Origin': '*',
