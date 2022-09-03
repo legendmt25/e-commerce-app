@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -50,14 +52,27 @@ public class AttributeValueServiceImpl implements AttributeValueService {
 
     @Override
     @Transactional
-    public Boolean delete(Long id) {
-        this.attributeValueRepository.deleteConnectionsByAttributeValueId(id);
+    public Boolean deleteById(Long id) {
+        this.attributeValueRepository.deleteConnectionsByAttributeValueId(Collections.singletonList(id));
         this.attributeValueRepository.deleteById(id);
         return true;
     }
 
     @Override
-    public void deleteByAttributeId(Long id) {
-        this.attributeValueRepository.deleteAttributeValuesByAttribute_Id(id);
+    @Transactional
+    public Boolean deleteAllById(Collection<Long> ids) {
+        this.attributeValueRepository.deleteConnectionsByAttributeValueId(ids);
+        this.attributeValueRepository.deleteAllById(ids);
+        return true;
+    }
+
+    @Override
+    public void deleteAllByAttributeIds(Collection<Long> ids) {
+        this.attributeValueRepository.deleteByAttribute_IdIsIn(ids);
+    }
+
+    @Override
+    public void flush() {
+        this.attributeValueRepository.flush();
     }
 }

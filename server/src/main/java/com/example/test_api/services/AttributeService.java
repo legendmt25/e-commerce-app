@@ -5,6 +5,7 @@ import com.example.test_api.models.AttributeValue;
 import com.example.test_api.models.input.AttributeInput;
 import com.example.test_api.models.input.AttributeValueInput;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface AttributeService {
@@ -23,5 +24,7 @@ public interface AttributeService {
     Boolean addAttributes(Long productId, List<AttributeInput> attributes);
 
     Boolean deleteById(Long id);
+
+    Boolean deleteAllById(Collection<Long> ids);
 
 }

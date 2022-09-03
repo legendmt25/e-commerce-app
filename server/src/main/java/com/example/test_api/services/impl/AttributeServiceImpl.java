@@ -10,9 +10,12 @@ import com.example.test_api.services.AttributeService;
 import com.example.test_api.services.AttributeValueService;
 import com.example.test_api.services.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +46,8 @@ public class AttributeServiceImpl implements AttributeService {
         return this.attributeRepository.save(attribute);
     }
 
+
+
     @Override
     public List<Attribute> findAllByProductId(Long productId) {
         return this.attributeRepository.findByProduct_Id(productId);
@@ -58,6 +63,7 @@ public class AttributeServiceImpl implements AttributeService {
         var attribute = this.findById(id);
         input.getValues().stream().map(AttributeValueInput::getValue).forEach(System.out::println);
         System.out.println();
+
         attribute.setValues(input.getValues().stream().map(value -> {
             if (value.getId() == null)
                 return this.attributeValueService.create(attribute.getId(), value);
@@ -68,15 +74,21 @@ public class AttributeServiceImpl implements AttributeService {
             }
         }).collect(Collectors.toList()));
         attribute.setTitle(input.getTitle());
+
         attribute.getValues().stream().map(AttributeValue::getValue).forEach(System.out::println);
         return attributeRepository.save(attribute);
     }
 
     @Override
     @Transactional
+    @Modifying(flushAutomatically = true)
     public Boolean manageAttributes(Long productId, List<AttributeInput> deleted, List<AttributeInput> updated, List<AttributeInput> created) {
-        deleted.forEach(attr -> this.deleteById(attr.getId()));
+        this.deleteAllById(deleted.stream().map(AttributeInput::getId).collect(Collectors.toList()));
+        attributeRepository.flush();
+        attributeValueService.flush();
         this.addAttributes(productId, created);
+        attributeRepository.flush();
+        attributeValueService.flush();
         updated.forEach(attr -> this.update(attr.getId(), attr));
         return true;
     }
@@ -87,11 +99,23 @@ public class AttributeServiceImpl implements AttributeService {
         return true;
     }
 
+    @Transactional
     @Override
+    @Modifying(flushAutomatically = true)
     public Boolean deleteById(Long id) {
-        this.attributeRepository.deleteAllConnectionsByAttributeId(id);
-        this.attributeValueService.deleteByAttributeId(id);
-        this.attributeRepository.deleteById(id);
+        this.attributeRepository.deleteAllConnectionsByAttributeIds(Collections.singletonList(id));
+        this.attributeValueService.deleteAllByAttributeIds(Collections.singletonList(id));
+        this.attributeRepository.deleteAllById(Collections.singletonList(id));
+        return true;
+    }
+
+    @Transactional
+    @Override
+    @Modifying(flushAutomatically = true)
+    public Boolean deleteAllById(Collection<Long> ids) {
+        this.attributeRepository.deleteAllConnectionsByAttributeIds(ids);
+        this.attributeValueService.deleteAllByAttributeIds(ids);
+        this.attributeRepository.deleteAllById(ids);
         return true;
     }
 

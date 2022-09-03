@@ -20,7 +20,7 @@ public class AttributeValueController {
 
     @DeleteMapping("/{id}")
     public Boolean deleteValue(@PathVariable Long id) {
-        return this.attributeValueService.delete(id);
+        return this.attributeValueService.deleteById(id);
     }
 
     @PostMapping("/connect")

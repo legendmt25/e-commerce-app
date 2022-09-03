@@ -1,5 +1,5 @@
 {
-  "name": "kostadinka",
+  "name": "test_api",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,6 +11,7 @@
     "core-js": "^3.8.3",
     "v-network-graph": "^0.5.16",
     "vue": "^3.2.13",
+    "vue-fb-customer-chat": "^0.2.1",
     "vue-router": "^4.0.13"
   },
   "devDependencies": {

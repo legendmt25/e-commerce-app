@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -18,9 +19,8 @@ public interface AttributeRepository extends JpaRepository<Attribute, Long> {
     @Query(value = """
             delete
             from attribute_value_connections avc
-            where avc.attribute_value_id in (select av.id from attribute_value av where av.attribute_id = ?1)
-               or avc.connections_id in (select av.id from attribute_value av where av.attribute_id = ?1)
+            where avc.attribute_value_id in (select av.id from attribute_value av where av.attribute_id in ?1)
+               or avc.connections_id in (select av.id from attribute_value av where av.attribute_id in ?1)
             """, nativeQuery = true)
-    void deleteAllConnectionsByAttributeId(Long id);
-
+    void deleteAllConnectionsByAttributeIds(Collection<Long> ids);
 }

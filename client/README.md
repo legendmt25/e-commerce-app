@@ -1,4 +1,4 @@
-# kostadinka
+# E commerce
 
 ## Project setup
 ```

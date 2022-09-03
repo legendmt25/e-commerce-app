@@ -3,6 +3,8 @@ package com.example.test_api.services;
 import com.example.test_api.models.AttributeValue;
 import com.example.test_api.models.input.AttributeValueInput;
 
+import java.util.Collection;
+
 public interface AttributeValueService {
 
     AttributeValue findById(Long id);
@@ -13,7 +15,11 @@ public interface AttributeValueService {
 
     Boolean disconnect(Long source, Long target);
 
-    Boolean delete(Long id);
+    Boolean deleteById(Long id);
 
-    void deleteByAttributeId(Long id);
+    Boolean deleteAllById(Collection<Long> ids);
+
+    void deleteAllByAttributeIds(Collection<Long> ids);
+
+    void flush();
 }

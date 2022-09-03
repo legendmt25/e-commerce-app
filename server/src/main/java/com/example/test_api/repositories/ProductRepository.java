@@ -28,7 +28,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                 where not (cast(pr.maxPrice as bigint) < ?1 or cast(pr.minPrice as bigint) > ?2)
                 order by ?#{#pageable}
             """
-
             , nativeQuery = true)
     Page<ProductWithPriceProjection> findAllWithPrice(@Param("low") Long low, @Param("high") Long high, Pageable pageable);
 
